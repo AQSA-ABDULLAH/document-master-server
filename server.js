@@ -15,8 +15,6 @@ app.get("/", (req, res) => {
   res.send("API is running 🚀");
 });
 
-app.use("/api", visitorRoutes);
-
 const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

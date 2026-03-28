@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const connectDB = async () => {
   try {
     await mongoose.connect(
-  "mongodb+srv://islam-daily02:FtBNJ0yjJukC3vwq@cluster0.yyjamcp.mongodb.net/islamDaily?retryWrites=true&w=majority"
+  "mongodb://localhost:27017/document-master"
 );
     console.log("✅ MongoDB connected");
   } catch (err) {
