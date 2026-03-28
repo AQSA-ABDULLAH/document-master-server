@@ -12,7 +12,7 @@ app.use(express.json());
 connectDB();
 
 app.get("/", (req, res) => {
-  res.send("API is running 🚀"); 
+  res.send("API is running 🚀");
 });
 
 const PORT = 5000;
