@@ -1,4 +1,3 @@
-
 const dns = require("node:dns");
 const mongoose = require("mongoose");
 
@@ -19,7 +18,25 @@ const connectDB = async () => {
     console.log("MongoDB connected successfully");
   } catch (err) {
     isConnected = false;
-    console.error("MongoDB connection error:", err.message);
+
+    console.error("MongoDB connection diagnostic:", {
+      name: err.name,
+      message: err.message,
+      code: err.code,
+      cause: err.cause?.message,
+      servers: mongoose.connection.readyState,
+    });
+
+    if (err.reason?.servers) {
+      for (const [address, server] of err.reason.servers) {
+        console.error("MongoDB server status:", {
+          address,
+          type: server.type,
+          error: server.error?.message,
+        });
+      }
+    }
+
     throw err;
   }
 };
