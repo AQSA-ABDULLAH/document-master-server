@@ -1,5 +1,5 @@
 const express = require("express");
-const router  = express.Router();
+const router = express.Router();
 const {
   getOrCreateVisitor,
   getAllVisitors,
@@ -11,13 +11,11 @@ const {
 } = require("../controllers/visitorController");
 const { requireVisitor } = require("../middleware/visitor");
 
-// ── CREATE ─────────────────────────────────────────────────────────────────
-// First app launch — no visitorId in AsyncStorage
-// Generate UUID on device → send here → stored in DB
-router.post("/register", requireVisitor, getOrCreateVisitor);
+// ── CREATE / VERIFY ────────────────────────────────────────────────────────
+// GET /api/visitor?visitor_id=... (Handles both first-time & returning users)
+router.get("/", getOrCreateVisitor);
 
-// ── READ ───────────────────────────────────────────────────────────────────
-// Get current visitor profile (subsequent app launches)
+// Get current visitor profile (subsequent app launches with middleware)
 router.get("/profile", requireVisitor, getOrCreateVisitor);
 
 // Get all visitors (admin/testing)
@@ -27,17 +25,11 @@ router.get("/all", getAllVisitors);
 router.get("/:visitorId", getVisitorById);
 
 // ── UPDATE ─────────────────────────────────────────────────────────────────
-// Update current visitor device info
 router.patch("/profile", requireVisitor, updateVisitor);
-
-// Soft delete — deactivate visitor
 router.patch("/profile/deactivate", requireVisitor, deactivateVisitor);
 
 // ── DELETE ─────────────────────────────────────────────────────────────────
-// Hard delete current visitor
 router.delete("/profile", requireVisitor, deleteVisitor);
-
-// Hard delete by visitorId (admin)
 router.delete("/:visitorId", deleteVisitorById);
 
 module.exports = router;

@@ -2,12 +2,34 @@ const Visitor = require("../models/Visitor");
 
 // ── CREATE / GET — Auto register or return existing ────────────────────────
 // GET /api/visitor/me
+
 const getOrCreateVisitor = async (req, res) => {
   try {
-    res.status(200).json({
+    const { visitor_id } = req.query;
+
+    if (!visitor_id) {
+      return res.status(400).json({
+        success: false,
+        message: "visitor_id is required",
+      });
+    }
+
+    // Database mein check karein ke kya yeh visitor mojood hai? (Verification)
+    let visitor = await Visitor.findOne({ visitorId: visitor_id });
+    let isNew = false;
+
+    // Agar database mein nahi hai (First-time user), toh naya create karein
+    if (!visitor) {
+      visitor = await Visitor.create({
+        visitorId: visitor_id,
+      });
+      isNew = true;
+    }
+
+    return res.status(200).json({
       success: true,
-      isNew: req.isNewVisitor || false,
-      visitor: req.visitor,
+      isNew,
+      visitor_data: visitor, // Frontend isko receive karke local storage update karega
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
